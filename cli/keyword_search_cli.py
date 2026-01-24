@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
-import json
+
+from lib.keyword_search import search_command
 
 
 def main() -> None:
@@ -16,23 +17,11 @@ def main() -> None:
     match args.command:
         case "search":
             print(f"Searching for: {args.query}")
-            data = load_data("data/movies.json")
-            movies_results = []
-            for movie in data["movies"]:
-                if args.query.lower() in movie["title"].lower():
-                    movies_results.append(movie)
-            movie_sorted = sorted(movies_results, key=lambda x: x["id"])
-            five_movies = movie_sorted[:5]
-            for movie in five_movies:
-                print(f"{movie['id']}. {movie['title']}")
+            results = search_command(args.query)
+            for i, movie in enumerate(results, 1):
+                print(f"{i}. {movie['title']}")
         case _:
             parser.print_help()
-
-
-def load_data(file_path: str) -> dict:
-    with open(file_path, "r") as file:
-        data = json.load(file)
-    return data
 
 
 if __name__ == "__main__":
